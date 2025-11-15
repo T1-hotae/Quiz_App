@@ -23,7 +23,6 @@ import {
   StyleSheet,
 } from "react-native";
 
-import AboutScreen from "../screen/AboutScreen";
 import MainTabs from "../tab/MainTabs";
 
 async function fakeSignIn({ email, password }) {
@@ -74,22 +73,28 @@ function authReducer(state, action) {
 export function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialAuth);
 
-  const signIn = async ({ email, password }) => {
+  async function signIn({ email, password }) {
     dispatch({ type: "SIGNIN_START" });
+
     try {
-      const res = await fakeSignIn({ email, password });
-      // 🔐 실서비스에서는 여기서 토큰을 AsyncStorage 등에 저장하세요
-      // await AsyncStorage.setItem('token', res.token);
-      dispatch({ type: "SIGNIN_SUCCESS", user: res.user, token: res.token });
-      return res;
+      const res = await axios.post("http://127.0.0.1:8000/auth/login", {
+        email,
+        password,
+      });
+
+      dispatch({
+        type: "SIGNIN_SUCCESS",
+        user: res.data.user,
+        token: res.data.access_token,
+      });
     } catch (e) {
       dispatch({
         type: "SIGNIN_FAIL",
-        message: e && e.message ? e.message : "로그인 실패",
+        message: e.response?.data?.detail || "로그인 실패",
       });
       throw e;
     }
-  };
+  }
 
   const signOut = async () => {
     // 🔐 실서비스에서는 저장된 토큰/유저도 함께 삭제하세요
@@ -149,7 +154,10 @@ export function LoginScreen() {
   return (
     <View style={{ flex: 1, padding: 20, justifyContent: "center" }}>
       <View style={{ alignItems: "center" }}>
-        <Image source={require("../assets/1024.png")} style={styles.logo} />
+        <Image
+          source={require("../assets/ai_quiz_1024.png")}
+          style={styles.logo}
+        />
       </View>
       <Text
         style={{
@@ -194,7 +202,7 @@ export function LoginScreen() {
           borderRadius: 10,
           height: 48,
           paddingHorizontal: 12,
-          marginBottom: 4,
+          marginBottom: 10,
         }}
       >
         <TextInput

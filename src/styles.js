@@ -111,19 +111,19 @@ export const styles = StyleSheet.create({
     color: "#6b7280",
     fontStyle: "italic",
   },
-  //blog
-  blogContainer: {
+  //awards
+  awardsContainer: {
     padding: 24,
     backgroundColor: "#f9fafb",
     gap: 16,
   },
-  blogTitle: {
+  awardsTitle: {
     fontSize: 28,
     fontWeight: "bold",
     color: "#1f2937",
     marginBottom: 10,
   },
-  blogCard: {
+  awardsCard: {
     backgroundColor: "white",
     borderRadius: 12,
     padding: 16,

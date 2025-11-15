@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Linking } from "react-native";
+import { ScrollView, View, Text } from "react-native";
 import { styles } from "../src/styles";
 
 /** ✅ 블로그 화면: 외부 사이트 자동 열기 */
@@ -15,11 +15,11 @@ export default function AwardsScreen() {
   ];
 
   return (
-    <ScrollView contentContainerStyle={styles.blogContainer}>
-      <Text style={styles.blogTitle}>✍️ 블로그</Text>
+    <ScrollView contentContainerStyle={styles.awardsContainer}>
+      <Text style={styles.awardsTitle}>업적</Text>
 
       {posts.map((post, idx) => (
-        <View key={idx} style={styles.blogCard}>
+        <View key={idx} style={styles.awardsCard}>
           <Text style={styles.postTitle}>{post.title}</Text>
           <Text style={styles.tag}>#{post.tag}</Text>
         </View>

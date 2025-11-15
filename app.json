@@ -4,11 +4,11 @@
     "slug": "ai_quiz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/ai_quiz.png",
+    "icon": "./assets/ai_quiz_1024.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/ai_quiz.png",
+      "image": "./assets/ai_quiz_1024.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,13 +17,13 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/ai_quiz.png",
+        "foregroundImage": "./assets/ai_quiz_1024.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/ai_quiz_1024.png"
     }
   }
 }
