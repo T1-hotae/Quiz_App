@@ -1,6 +1,14 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import { useAuth } from "../lib/AuthContext";
+import { useEffect } from "react";
 
 export default function ProfileScreen() {
+  const { user, refreshMe } = useAuth();
+
+  useEffect(() => {
+    refreshMe();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={{
@@ -38,9 +46,12 @@ export default function ProfileScreen() {
 
         {/* 이름 / 전공 */}
         <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 4 }}>
-          김ㅇㅇ
+          {user.name}
         </Text>
-        <Text style={{ fontSize: 14, color: "#6b7280" }}>OOO학과</Text>
+        <Text style={{ fontSize: 14, color: "#6b7280" }}>{user.email}</Text>
+        <Text style={{ fontSize: 14, color: "#6b7280" }}>
+          {user.department}
+        </Text>
       </View>
 
       {/* 레벨 표시 */}

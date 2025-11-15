@@ -4,14 +4,7 @@ import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useReducer,
-  useState,
-  useEffect,
-} from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -24,107 +17,10 @@ import {
 } from "react-native";
 
 import MainTabs from "../tab/MainTabs";
+import { useAuth } from "../lib/AuthContext";
+import { RegisterScreen } from "../screen/RegisterScreen";
 
-async function fakeSignIn({ email, password }) {
-  await new Promise((r) => setTimeout(r, 600));
-  if (!/.+@.+\..+/.test(String(email || "").trim()))
-    throw new Error("올바른 이메일 형식이 아닙니다.");
-  if (String(password || "").length < 6)
-    throw new Error("비밀번호는 6자 이상이어야 합니다.");
-  if (
-    String(email).toLowerCase() !== "hotae0321@naver.com" ||
-    password !== "ghxo2002"
-  )
-    throw new Error("이메일 또는 비밀번호가 올바르지 않습니다.");
-  return {
-    token: "demo-token",
-    user: { id: "u1", name: "Hotae Zzang", email: String(email).toLowerCase() },
-  };
-}
-
-const AuthContext = createContext(null);
-
-const initialAuth = { loading: false, error: "", user: null, token: null };
-function authReducer(state, action) {
-  switch (action.type) {
-    case "SIGNIN_START":
-      return { ...state, loading: true, error: "" };
-    case "SIGNIN_SUCCESS":
-      return {
-        ...state,
-        loading: false,
-        user: action.user,
-        token: action.token,
-        error: "",
-      };
-    case "SIGNIN_FAIL":
-      return {
-        ...state,
-        loading: false,
-        error: action.message || "로그인 실패",
-      };
-    case "SIGNOUT":
-      return { ...state, user: null, token: null, error: "" };
-    default:
-      return state;
-  }
-}
-
-export function AuthProvider({ children }) {
-  const [state, dispatch] = useReducer(authReducer, initialAuth);
-
-  async function signIn({ email, password }) {
-    dispatch({ type: "SIGNIN_START" });
-
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/auth/login", {
-        email,
-        password,
-      });
-
-      dispatch({
-        type: "SIGNIN_SUCCESS",
-        user: res.data.user,
-        token: res.data.access_token,
-      });
-    } catch (e) {
-      dispatch({
-        type: "SIGNIN_FAIL",
-        message: e.response?.data?.detail || "로그인 실패",
-      });
-      throw e;
-    }
-  }
-
-  const signOut = async () => {
-    // 🔐 실서비스에서는 저장된 토큰/유저도 함께 삭제하세요
-    // await AsyncStorage.multiRemove(['token','user']);
-    dispatch({ type: "SIGNOUT" });
-  };
-
-  const value = useMemo(
-    () => ({
-      loading: state.loading,
-      error: state.error,
-      user: state.user,
-      token: state.token,
-      isAuthenticated: !!state.token,
-      signIn,
-      signOut,
-    }),
-    [state.loading, state.error, state.user, state.token]
-  );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth는 AuthProvider 내부에서만 사용하세요");
-  return ctx;
-}
-
-export function LoginScreen() {
+export function LoginScreen({ onGoRegister }) {
   const { signIn, loading, error } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -252,6 +148,16 @@ export function LoginScreen() {
           <Text style={{ color: "#fff", fontWeight: "700" }}>로그인</Text>
         )}
       </Pressable>
+
+      {/* 👇 여기 “회원가입” 버튼 추가 */}
+      <Pressable
+        onPress={onGoRegister}
+        style={{ marginTop: 16, alignSelf: "center" }}
+      >
+        <Text style={{ color: "#2563eb", fontWeight: "600" }}>
+          아직 계정이 없나요? 회원가입
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -272,9 +178,19 @@ export function LogoutScreen() {
 
 export function Router() {
   const { isAuthenticated } = useAuth();
+  const [mode, setMode] = useState("login");
+
+  if (isAuthenticated) {
+    return <HomeScreen />;
+  }
+
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      {isAuthenticated ? <HomeScreen /> : <LoginScreen />}
+      {mode === "login" ? (
+        <LoginScreen onGoRegister={() => setMode("register")} />
+      ) : (
+        <RegisterScreen onGoLogin={() => setMode("login")} /> // ✅ 요거!
+      )}
     </ScrollView>
   );
 }

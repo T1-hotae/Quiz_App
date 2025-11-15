@@ -1,24 +1,30 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import QuizDetail from "../components/QuizDetail";
 import QuizList from "../components/QuizList";
+import QuizPlayScreen from "../components/QuizScreen";
 
 /** ========== 네비게이터 구성 ========== */
-const PortfolioStackNav = createNativeStackNavigator();
+const Stack = createNativeStackNavigator();
 export default function QuizStack() {
   return (
-    <PortfolioStackNav.Navigator
+    <Stack.Navigator
       screenOptions={{ headerTitleAlign: "center", headerShown: false }}
     >
-      <PortfolioStackNav.Screen
-        name="PortfolioList"
+      <Stack.Screen
+        name="QuizList"
         component={QuizList}
-        options={{ title: "퀴즈" }}
+        options={{ title: "AI Quiz" }}
       />
-      <PortfolioStackNav.Screen
-        name="ProjectDetail"
+      <Stack.Screen
+        name="QuizDetail"
         component={QuizDetail}
-        options={{ title: "퀴즈 종류" }}
+        options={{ title: "퀴즈 설명" }}
       />
-    </PortfolioStackNav.Navigator>
+      <Stack.Screen
+        name="QuizPlay"
+        component={QuizPlayScreen}
+        options={{ title: "퀴즈 풀기" }}
+      />
+    </Stack.Navigator>
   );
 }

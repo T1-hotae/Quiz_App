@@ -1,4 +1,4 @@
-import { Linking, View, Image, TouchableOpacity, Text } from "react-native";
+import { View, TouchableOpacity, Text } from "react-native";
 import { styles } from "../src/styles";
 
 // 드로어

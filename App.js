@@ -2,7 +2,7 @@
 import "react-native-gesture-handler";
 
 import { View, KeyboardAvoidingView, Platform } from "react-native";
-import { AuthProvider } from "./src/auth";
+import { AuthProvider } from "./lib/AuthContext";
 import { Router } from "./src/auth";
 
 export default function App() {
