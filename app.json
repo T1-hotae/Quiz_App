@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "cross10",
-    "slug": "cross10",
+    "name": "ai_quiz",
+    "slug": "ai_quiz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ai_quiz.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/ai_quiz.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/ai_quiz.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true

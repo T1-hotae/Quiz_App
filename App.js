@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// ⚠️ 반드시 최상단
+import "react-native-gesture-handler";
+
+import { View, KeyboardAvoidingView, Platform } from "react-native";
+import { AuthProvider } from "./src/auth";
+import { Router } from "./src/auth";
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <View style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <AuthProvider>
+            <Router />
+          </AuthProvider>
+        </KeyboardAvoidingView>
+      </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
