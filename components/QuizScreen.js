@@ -1,7 +1,13 @@
 // QuizPlayScreen.js
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, Button } from "react-native";
-import { QUIZZES } from "../src/data/quizzes"; // 경로 수정
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  Pressable, // ✅ Button 대신 Pressable 사용
+} from "react-native";
+import { QUIZZES } from "../src/data/quizzes";
 
 export default function QuizPlayScreen({ route, navigation }) {
   const { quizId } = route.params ?? {};
@@ -18,7 +24,23 @@ export default function QuizPlayScreen({ route, navigation }) {
     return (
       <View style={{ flex: 1, padding: 24, backgroundColor: "#fff" }}>
         <Text>존재하지 않는 퀴즈입니다.</Text>
-        <Button title="뒤로" onPress={() => navigation.goBack()} />
+
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={({ pressed }) => [
+            {
+              marginTop: 16,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#e5e7eb",
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <Text style={{ fontWeight: "600", color: "#111827" }}>뒤로</Text>
+        </Pressable>
       </View>
     );
   }
@@ -42,12 +64,10 @@ export default function QuizPlayScreen({ route, navigation }) {
     const isLast = currentIndex === total - 1;
 
     if (isLast) {
-      // 마지막 문제였다면 퀴즈 종료
       setIsFinished(true);
       return;
     }
 
-    // 다음 문제로
     setCurrentIndex((prev) => prev + 1);
     setSelectedIndex(null);
     setAnswered(false);
@@ -89,12 +109,48 @@ export default function QuizPlayScreen({ route, navigation }) {
             : "조금 더 공부해보면 좋겠어요 🙂"}
         </Text>
 
-        <Button title="다시 풀기" onPress={handleRestart} />
-        <View style={{ height: 12 }} />
-        <Button
-          title="퀴즈 목록으로"
+        {/* 다시 풀기 (Primary) */}
+        <Pressable
+          onPress={handleRestart}
+          style={({ pressed }) => [
+            {
+              width: "100%",
+              paddingVertical: 14,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#4f46e5",
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>
+            다시 풀기
+          </Text>
+        </Pressable>
+
+        {/* 퀴즈 목록으로 (Secondary) */}
+        <Pressable
           onPress={() => navigation.navigate("QuizList")}
-        />
+          style={({ pressed }) => [
+            {
+              width: "100%",
+              marginTop: 10,
+              paddingVertical: 12,
+              borderRadius: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              borderWidth: 1,
+              borderColor: "#d1d5db",
+              backgroundColor: "#ffffff",
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <Text style={{ color: "#4b5563", fontWeight: "600" }}>
+            퀴즈 목록으로
+          </Text>
+        </Pressable>
       </View>
     );
   }
@@ -123,8 +179,8 @@ export default function QuizPlayScreen({ route, navigation }) {
 
           let backgroundColor = "#f3f4f6"; // 기본
           if (answered) {
-            if (isAnswer) backgroundColor = "#bbf7d0"; // 정답 (연한 초록)
-            else if (isSelected && !isAnswer) backgroundColor = "#fecaca"; // 오답 선택
+            if (isAnswer) backgroundColor = "#bbf7d0"; // 정답
+            else if (isSelected && !isAnswer) backgroundColor = "#fecaca"; // 오답선택
           } else if (isSelected) {
             backgroundColor = "#dbeafe"; // 선택만 한 상태
           }
@@ -165,18 +221,31 @@ export default function QuizPlayScreen({ route, navigation }) {
         </View>
       )}
 
-      <Button
-        title={
-          currentIndex === total - 1
+      {/* 다음/결과 버튼 (Primary 스타일) */}
+      <Pressable
+        onPress={answered ? handleNext : undefined}
+        style={({ pressed }) => [
+          {
+            marginTop: 8,
+            paddingVertical: 14,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#4f46e5",
+            opacity: !answered ? 0.6 : pressed ? 0.7 : 1, // 답 안 골랐을 땐 약간 비활성 느낌
+          },
+        ]}
+      >
+        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>
+          {currentIndex === total - 1
             ? answered
               ? "결과 보기"
               : "답을 선택해주세요"
             : answered
             ? "다음 문제"
-            : "답을 선택해주세요"
-        }
-        onPress={answered ? handleNext : undefined}
-      />
+            : "답을 선택해주세요"}
+        </Text>
+      </Pressable>
     </ScrollView>
   );
 }

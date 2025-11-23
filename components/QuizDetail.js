@@ -1,6 +1,6 @@
 // QuizDetail.js
-import { View, Text, Button } from "react-native";
-import { QUIZZES } from "../src/data/quizzes"; // 경로 수정
+import { View, Text, Pressable } from "react-native";
+import { QUIZZES } from "../src/data/quizzes";
 
 export default function QuizDetail({ route, navigation }) {
   const { quizId } = route.params ?? {};
@@ -10,7 +10,23 @@ export default function QuizDetail({ route, navigation }) {
     return (
       <View style={{ flex: 1, padding: 24, backgroundColor: "#fff" }}>
         <Text>존재하지 않는 퀴즈입니다.</Text>
-        <Button title="뒤로" onPress={() => navigation.goBack()} />
+
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={({ pressed }) => [
+            {
+              marginTop: 16,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#e5e7eb", // 연한 회색
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <Text style={{ fontWeight: "600", color: "#111827" }}>뒤로</Text>
+        </Pressable>
       </View>
     );
   }
@@ -19,17 +35,50 @@ export default function QuizDetail({ route, navigation }) {
     <View style={{ flex: 1, padding: 24, gap: 12, backgroundColor: "#fff" }}>
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>{quiz.title}</Text>
 
-      <View style={{ padding: 10 }}>
-        <Text style={{ fontWeight: "bold" }}>개요:</Text>
+      <View style={{ paddingVertical: 10 }}>
+        <Text style={{ fontWeight: "bold", marginBottom: 4 }}>개요:</Text>
         <Text>{quiz.description}</Text>
       </View>
 
-      <Button
-        title="퀴즈 풀기"
+      {/* 퀴즈 풀기 버튼 (Primary) */}
+      <Pressable
         onPress={() => navigation.navigate("QuizPlay", { quizId: quiz.id })}
-      />
-      <View style={{ height: 12 }} />
-      <Button title="뒤로" onPress={() => navigation.goBack()} />
+        style={({ pressed }) => [
+          {
+            marginTop: 16,
+            paddingVertical: 14,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#4f46e5", // 보라/인디고 느낌
+            opacity: pressed ? 0.7 : 1,
+          },
+        ]}
+      >
+        <Text style={{ color: "#fff", fontWeight: "700", fontSize: 16 }}>
+          퀴즈 풀기
+        </Text>
+      </Pressable>
+
+      {/* 뒤로가기 버튼 (Secondary) */}
+      <Pressable
+        onPress={() => navigation.goBack()}
+        style={({ pressed }) => [
+          {
+            marginTop: 10,
+            paddingVertical: 12,
+            borderRadius: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            borderWidth: 1,
+            borderColor: "#d1d5db",
+            backgroundColor: "#ffffff",
+            opacity: pressed ? 0.7 : 1,
+          },
+        ]}
+      >
+        <Text style={{ color: "#4b5563", fontWeight: "600" }}>뒤로</Text>
+      </Pressable>
     </View>
   );
 }
