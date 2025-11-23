@@ -1,18 +1,91 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import { useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import { useEffect, useState } from "react";
+import { useAuth } from "../src/lib/auth-provider";
+import { db } from "../src/Firebase/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function ProfileScreen() {
-  //const { user, refreshMe } = useAuth(); //백엔드
+  const { user } = useAuth(); // 🔹 Firebase Auth 사용자 (uid, email 등)
+  const [profile, setProfile] = useState(null); // Firestore 프로필
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => { //백엔드
-  //   refreshMe();
-  // }, []);
+  useEffect(() => {
+    console.log("ProfileScreen user:", user);
+    console.log("ProfileScreen db:", db);
 
-  const user = {
-    name: "김오조",
-    email: "sample@example.com",
-    department: "인공지능 전공",
-  };
+    // 로그인 안 돼 있으면 그냥 끝
+    if (!user) {
+      setLoading(false);
+      return;
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const ref = doc(db, "users", user.uid); // users/{uid}
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          setProfile(snap.data());
+        } else {
+          // 혹시 문서가 없으면 기본값
+          setProfile({
+            name: user.displayName || "",
+            email: user.email || "",
+            department: "",
+          });
+        }
+      } catch (e) {
+        console.log("프로필 불러오기 오류:", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [user]);
+
+  if (!user) {
+    // 로그인 안 된 상태에서 접근한 경우
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f9fafb",
+        }}
+      >
+        <Text>로그인이 필요합니다.</Text>
+      </View>
+    );
+  }
+
+  if (loading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#f9fafb",
+        }}
+      >
+        <ActivityIndicator size="large" color="#3b82f6" />
+      </View>
+    );
+  }
+
+  // 🔹 표시에 사용할 값들 (Firestore 값이 우선, 없으면 Auth 값)
+  const name = profile?.name || user.displayName || "이름 미설정";
+  const email = profile?.email || user.email || "이메일 미설정";
+  const department = profile?.department || "학과 정보 미설정";
 
   return (
     <ScrollView
@@ -51,15 +124,13 @@ export default function ProfileScreen() {
 
         {/* 이름 / 전공 */}
         <Text style={{ fontSize: 20, fontWeight: "700", marginBottom: 4 }}>
-          {user.name}
+          {name}
         </Text>
-        <Text style={{ fontSize: 14, color: "#6b7280" }}>{user.email}</Text>
-        <Text style={{ fontSize: 14, color: "#6b7280" }}>
-          {user.department}
-        </Text>
+        <Text style={{ fontSize: 14, color: "#6b7280" }}>{email}</Text>
+        <Text style={{ fontSize: 14, color: "#6b7280" }}>{department}</Text>
       </View>
 
-      {/* 레벨 표시 */}
+      {/* 레벨 표시 (지금은 더미 값) */}
       <View
         style={{
           marginTop: 30,
@@ -78,7 +149,7 @@ export default function ProfileScreen() {
         </Text>
       </View>
 
-      {/* 퀴즈 통계 */}
+      {/* 퀴즈 통계 (이 부분은 나중에 Firestore/백엔드 연동) */}
       <View
         style={{
           marginTop: 40,

@@ -3,10 +3,14 @@ import QuizStack from "../tab/QuizStack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AwardsScreen from "../screen/AwardsScreen";
+import { useColorScheme } from "react-native";
 
-// 하단 탭
 const Tab = createBottomTabNavigator();
+
 export default function MainTabs() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -24,9 +28,14 @@ export default function MainTabs() {
 
           return <Ionicons name={iconName} size={26} color={color} />;
         },
-        tabBarActiveTintColor: "#3b82f6", // 활성색
-        tabBarInactiveTintColor: "#9ca3af", // 비활성색
+        // ✅ 다크/라이트 공통 옵션
         headerShown: false,
+        tabBarActiveTintColor: isDark ? "#60a5fa" : "#3b82f6",
+        tabBarInactiveTintColor: isDark ? "#6b7280" : "#9ca3af",
+        tabBarStyle: {
+          backgroundColor: isDark ? "#020617" : "#ffffff",
+          borderTopColor: isDark ? "#1f2937" : "#e5e7eb",
+        },
       })}
     >
       <Tab.Screen name="Awards" component={AwardsScreen} />
