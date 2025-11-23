@@ -12,7 +12,7 @@ import {
 import { useState } from "react";
 import { useAuth } from "./AuthContext";
 
-export default function RegisterScreen({ onGoLogin }) {
+export function RegisterScreen({ onGoLogin }) {
   const { signUp, loading, error } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -71,14 +71,10 @@ export default function RegisterScreen({ onGoLogin }) {
       await signUp({
         email: email.trim(),
         password,
-        name: name.trim(),
-        department: department.trim(),
+        name,
+        department, // ✅ 백엔드에 보내고 싶으면 같이 보냄 (백엔드 스키마도 꼭 수정해줘야 저장됨!)
       });
-      // 회원가입 성공하면 onAuthStateChanged로 로그인 상태가 되고
-      // Router에서 isAuthenticated=true가 되면서 HomeScreen으로 넘어가게 됨
-    } catch (_) {
-      // 에러는 Context의 error로 표시
-    }
+    } catch (_) {}
   };
 
   // 공통 스타일처럼 쓰는 간단한 헬퍼

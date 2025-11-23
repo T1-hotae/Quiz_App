@@ -17,8 +17,7 @@ import {
 } from "react-native";
 
 import MainTabs from "../tab/MainTabs";
-import { useAuth } from "../lib/AuthContext";
-import { RegisterScreen } from "../screen/RegisterScreen";
+import { useAuth } from "./AuthContext";
 
 export function LoginScreen({ onGoRegister }) {
   const { signIn, loading, error } = useAuth();
@@ -173,29 +172,6 @@ export function LogoutScreen() {
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>로그아웃 중...</Text>
     </View>
-  );
-}
-
-export function Router() {
-  const { isAuthenticated } = useAuth();
-  const [mode, setMode] = useState("login");
-
-  //백 없어서 임시로
-  // 나중에 isAuthenticated로 해야됨
-  const Notlogin = true;
-
-  if (Notlogin) {
-    return <HomeScreen />;
-  }
-
-  return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      {mode === "login" ? (
-        <LoginScreen onGoRegister={() => setMode("register")} />
-      ) : (
-        <RegisterScreen onGoLogin={() => setMode("login")} /> // ✅ 요거!
-      )}
-    </ScrollView>
   );
 }
 

@@ -1,5 +1,4 @@
-// QuizPlayScreen.js
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,

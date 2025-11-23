@@ -1,9 +1,7 @@
-// ⚠️ 반드시 최상단
 import "react-native-gesture-handler";
 
-import { View, KeyboardAvoidingView, Platform } from "react-native";
-import { AuthProvider } from "./lib/AuthContext";
-import { Router } from "./src/auth";
+import { AuthProvider } from "./src/lib/auth-provider";
+import Router from "./src/router";
 
 export default function App() {
   return (

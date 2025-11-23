@@ -1,18 +1,18 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import { useAuth } from "../lib/AuthContext";
 import { useEffect } from "react";
 
 export default function ProfileScreen() {
-  //const { user, refreshMe } = useAuth();
+  //const { user, refreshMe } = useAuth(); //백엔드
+
+  // useEffect(() => { //백엔드
+  //   refreshMe();
+  // }, []);
 
   const user = {
     name: "김오조",
     email: "sample@example.com",
     department: "인공지능 전공",
   };
-  // useEffect(() => {
-  //   refreshMe();
-  // }, []);
 
   return (
     <ScrollView
