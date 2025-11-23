@@ -7,7 +7,10 @@ import { useState } from "react";
 
 export default function Router() {
   const { isAuthenticated } = useAuth();
-  const [mode, setMode] = (useState < "login") | ("register" > "login");
+
+  // ✅ 그냥 문자열 초기값
+  const [mode, setMode] = useState("login");
+  // TS가 아니라면 이걸로 충분합니다.
 
   if (isAuthenticated) {
     return <AppDrawer />;
