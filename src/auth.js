@@ -180,7 +180,11 @@ export function Router() {
   const { isAuthenticated } = useAuth();
   const [mode, setMode] = useState("login");
 
-  if (isAuthenticated) {
+  //백 없어서 임시로
+  // 나중에 isAuthenticated로 해야됨
+  const Notlogin = true;
+
+  if (Notlogin) {
     return <HomeScreen />;
   }
 

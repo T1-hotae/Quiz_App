@@ -3,11 +3,16 @@ import { useAuth } from "../lib/AuthContext";
 import { useEffect } from "react";
 
 export default function ProfileScreen() {
-  const { user, refreshMe } = useAuth();
+  //const { user, refreshMe } = useAuth();
 
-  useEffect(() => {
-    refreshMe();
-  }, []);
+  const user = {
+    name: "김오조",
+    email: "sample@example.com",
+    department: "인공지능 전공",
+  };
+  // useEffect(() => {
+  //   refreshMe();
+  // }, []);
 
   return (
     <ScrollView
