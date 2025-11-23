@@ -8,7 +8,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import { useAuth } from "../src/Firebase/auth-provider";
+import { useAuth } from "../src/lib/auth-provider";
 
 export default function LoginScreen({ onGoRegister }) {
   const { signIn, loading, error } = useAuth();

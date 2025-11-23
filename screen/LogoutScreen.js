@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { View, Text } from "react-native";
-import { useAuth } from "../backend_tmp/AuthContext";
+import { useAuth } from "../src/lib/auth-provider";
 
-export function LogoutScreen() {
+export default function LogoutScreen() {
   const { signOut } = useAuth();
 
   useEffect(() => {

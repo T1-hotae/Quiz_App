@@ -9,6 +9,14 @@ FastAPI 백엔드와 연동하는 **React Native 기반 퀴즈 앱**입니다.
 
 > ⚙️ Expo, Firebase, React Navigation 등 의존성 때문에 초기 세팅이 꽤 빡셌습니다…
 
+## 환경 세팅 및 설치 방법
+
+```
+npm i
+```
+
+를 하면 package가 설치됩니다.
+
 ---
 
 ## 주요 기능

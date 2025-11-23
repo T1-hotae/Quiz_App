@@ -10,7 +10,7 @@ import {
   Platform,
 } from "react-native";
 import { useState } from "react";
-import { useAuth } from "./AuthContext";
+import { useAuth } from "../src/lib/auth-provider";
 
 export default function RegisterScreen({ onGoLogin }) {
   const { signUp, loading, error } = useAuth();

@@ -1,4 +1,3 @@
-// QuizList.js
 import { Text, TouchableOpacity, ScrollView, View } from "react-native";
 import { styles } from "../src/styles";
 import { QUIZZES } from "../src/data/quizzes"; // 경로는 맞게 수정

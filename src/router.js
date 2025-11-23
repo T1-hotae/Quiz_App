@@ -2,6 +2,8 @@ import { ScrollView } from "react-native";
 import RegisterScreen from "../screen/RegisterScreen";
 import LoginScreen from "../screen/LoginScreen";
 import AppDrawer from "./AppDrawer";
+import { useAuth } from "./lib/auth-provider";
+import { useState } from "react";
 
 export default function Router() {
   const { isAuthenticated } = useAuth();

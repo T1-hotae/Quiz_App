@@ -1,11 +1,19 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
+import {
+  // React Native에서 세션 유지까지 하고 싶을 때
+  initializeAuth,
+  getReactNativePersistence,
+  // getAuth,
+} from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
   apiKey: "AIzaSyBXRU7ccncPbD_z4K9CHmvk0VP4ukspVEc",
   authDomain: "aiquiz-79b53.firebaseapp.com",
