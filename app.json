@@ -16,11 +16,13 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.hotae.aiquiz",
       "adaptiveIcon": {
         "foregroundImage": "./assets/ai_quiz_1024.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/ai_quiz_1024.png"
