@@ -3,7 +3,7 @@ name: EAS Build (Android, npm)
 on:
   push:
     branches:
-      - main
+      - master
   workflow_dispatch: # 👉 수동 실행도 가능하게
 
 jobs:
