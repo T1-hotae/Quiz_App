@@ -56,7 +56,7 @@ export default function LoginScreen({ onGoRegister }) {
       >
         <View style={{ alignItems: "center" }}>
           <Image
-            source={require("../assets/ai_quiz_1024.png")}
+            source={require("../assets/quiz_intro.png")}
             style={styles.logo}
           />
         </View>

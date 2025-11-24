@@ -1,41 +1,13 @@
 // AwardsScreen.js
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text } from "react-native";
+import { achievements } from "../src/data/achievement";
+import { createStyles } from "./AwardScreenStyle";
+import { useColorScheme } from "react-native";
 
 export default function AwardsScreen() {
-  const achievements = [
-    {
-      id: "first-quiz",
-      title: "첫 퀴즈 클리어 🎉",
-      tag: "신경망 퀴즈",
-      description: "어떤 퀴즈든 1회 이상 끝까지 풀기",
-      unlocked: true,
-      progressText: "1 / 1",
-    },
-    {
-      id: "perfect-nn",
-      title: "신경망 달인 🧠",
-      tag: "Neural Network",
-      description: "신경망 퀴즈에서 만점 받기",
-      unlocked: false,
-      progressText: "0 / 1",
-    },
-    {
-      id: "ml-beginner",
-      title: "머신러닝 입문자",
-      tag: "Machine Learning",
-      description: "머신러닝 퀴즈 1회 이상 시도하기",
-      unlocked: true,
-      progressText: "1 / 1",
-    },
-    {
-      id: "streak-3",
-      title: "3일 연속 출석 💪",
-      tag: "Routine",
-      description: "3일 연속으로 앱에서 퀴즈 풀기",
-      unlocked: false,
-      progressText: "1 / 3",
-    },
-  ];
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const styles = createStyles(isDark);
 
   return (
     <ScrollView contentContainerStyle={styles.awardsContainer}>
@@ -85,31 +57,3 @@ export default function AwardsScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  // styles.js 예시
-  awardsContainer: {
-    padding: 24,
-    backgroundColor: "#fff",
-    gap: 12,
-  },
-  awardsTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-  },
-  awardsCard: {
-    padding: 12,
-    borderRadius: 12,
-    backgroundColor: "#F9FAFB",
-    marginBottom: 8,
-  },
-  postTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  tag: {
-    fontSize: 12,
-    color: "#6B7280",
-  },
-});

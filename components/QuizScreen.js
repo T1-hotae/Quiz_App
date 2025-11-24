@@ -4,7 +4,8 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
-  Pressable, // ✅ Button 대신 Pressable 사용
+  Pressable,
+  useColorScheme,
 } from "react-native";
 import { QUIZZES } from "../src/data/quizzes";
 
@@ -19,10 +20,24 @@ export default function QuizPlayScreen({ route, navigation }) {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
+  // 🔹 다크모드 감지
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+
+  const BG = isDark ? "#020617" : "#ffffff";
+  const TEXT_PRIMARY = isDark ? "#e5e7eb" : "#111827";
+  const TEXT_SECONDARY = isDark ? "#9ca3af" : "#4b5563";
+  const BORDER_SOFT = isDark ? "#374151" : "#d1d5db";
+
+  const CHOICE_BASE = isDark ? "#111827" : "#f3f4f6";
+  const CHOICE_SELECTED = isDark ? "#1d4ed8" : "#dbeafe";
+  const CHOICE_CORRECT = isDark ? "#14532d" : "#bbf7d0";
+  const CHOICE_WRONG = isDark ? "#7f1d1d" : "#fecaca";
+
   if (!quiz) {
     return (
-      <View style={{ flex: 1, padding: 24, backgroundColor: "#fff" }}>
-        <Text>존재하지 않는 퀴즈입니다.</Text>
+      <View style={{ flex: 1, padding: 24, backgroundColor: BG }}>
+        <Text style={{ color: TEXT_PRIMARY }}>존재하지 않는 퀴즈입니다.</Text>
 
         <Pressable
           onPress={() => navigation.goBack()}
@@ -33,12 +48,12 @@ export default function QuizPlayScreen({ route, navigation }) {
               borderRadius: 8,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: "#e5e7eb",
+              backgroundColor: isDark ? "#1f2937" : "#e5e7eb",
               opacity: pressed ? 0.7 : 1,
             },
           ]}
         >
-          <Text style={{ fontWeight: "600", color: "#111827" }}>뒤로</Text>
+          <Text style={{ fontWeight: "600", color: TEXT_PRIMARY }}>뒤로</Text>
         </Pressable>
       </View>
     );
@@ -91,16 +106,35 @@ export default function QuizPlayScreen({ route, navigation }) {
           padding: 24,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#fff",
+          backgroundColor: BG,
         }}
       >
-        <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 16 }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: "bold",
+            marginBottom: 16,
+            color: TEXT_PRIMARY,
+          }}
+        >
           결과
         </Text>
-        <Text style={{ fontSize: 18, marginBottom: 8 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            marginBottom: 8,
+            color: TEXT_PRIMARY,
+          }}
+        >
           점수: {score} / {total}
         </Text>
-        <Text style={{ fontSize: 16, marginBottom: 24 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            marginBottom: 24,
+            color: TEXT_SECONDARY,
+          }}
+        >
           {score === total
             ? "완벽해요! 🎉"
             : score >= total / 2
@@ -140,13 +174,13 @@ export default function QuizPlayScreen({ route, navigation }) {
               alignItems: "center",
               justifyContent: "center",
               borderWidth: 1,
-              borderColor: "#d1d5db",
-              backgroundColor: "#ffffff",
+              borderColor: BORDER_SOFT,
+              backgroundColor: isDark ? "#020617" : "#ffffff",
               opacity: pressed ? 0.7 : 1,
             },
           ]}
         >
-          <Text style={{ color: "#4b5563", fontWeight: "600" }}>
+          <Text style={{ color: TEXT_SECONDARY, fontWeight: "600" }}>
             퀴즈 목록으로
           </Text>
         </Pressable>
@@ -157,18 +191,37 @@ export default function QuizPlayScreen({ route, navigation }) {
   // 🧠 퀴즈 진행 중 화면
   return (
     <ScrollView
-      style={{ flex: 1, backgroundColor: "#fff" }}
+      style={{ flex: 1, backgroundColor: BG }}
       contentContainerStyle={{ padding: 24 }}
     >
-      <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 8 }}>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          marginBottom: 8,
+          color: TEXT_PRIMARY,
+        }}
+      >
         {quiz.title}
       </Text>
-      <Text style={{ fontSize: 14, color: "#666", marginBottom: 16 }}>
+      <Text
+        style={{
+          fontSize: 14,
+          color: TEXT_SECONDARY,
+          marginBottom: 16,
+        }}
+      >
         문제 {currentIndex + 1} / {total} · 현재 점수 {score}
       </Text>
 
       <View style={{ marginBottom: 20 }}>
-        <Text style={{ fontSize: 18, marginBottom: 12 }}>
+        <Text
+          style={{
+            fontSize: 18,
+            marginBottom: 12,
+            color: TEXT_PRIMARY,
+          }}
+        >
           {question.question}
         </Text>
 
@@ -176,12 +229,12 @@ export default function QuizPlayScreen({ route, navigation }) {
           const isSelected = selectedIndex === idx;
           const isAnswer = idx === question.answerIndex;
 
-          let backgroundColor = "#f3f4f6"; // 기본
+          let backgroundColor = CHOICE_BASE;
           if (answered) {
-            if (isAnswer) backgroundColor = "#bbf7d0"; // 정답
-            else if (isSelected && !isAnswer) backgroundColor = "#fecaca"; // 오답선택
+            if (isAnswer) backgroundColor = CHOICE_CORRECT; // 정답
+            else if (isSelected && !isAnswer) backgroundColor = CHOICE_WRONG; // 오답선택
           } else if (isSelected) {
-            backgroundColor = "#dbeafe"; // 선택만 한 상태
+            backgroundColor = CHOICE_SELECTED; // 선택만 한 상태
           }
 
           return (
@@ -194,10 +247,10 @@ export default function QuizPlayScreen({ route, navigation }) {
                 borderRadius: 8,
                 backgroundColor,
                 borderWidth: 1,
-                borderColor: answered && isAnswer ? "#16a34a" : "#e5e7eb",
+                borderColor: answered && isAnswer ? "#16a34a" : BORDER_SOFT,
               }}
             >
-              <Text>{choice}</Text>
+              <Text style={{ color: TEXT_PRIMARY }}>{choice}</Text>
             </TouchableOpacity>
           );
         })}
@@ -208,13 +261,18 @@ export default function QuizPlayScreen({ route, navigation }) {
           <Text
             style={{
               fontWeight: "bold",
-              color: isCorrect ? "#16a34a" : "#dc2626",
+              color: isCorrect ? "#16a34a" : "#f97373",
               marginBottom: 4,
             }}
           >
             {isCorrect ? "정답입니다! 🎉" : "틀렸어요 😢"}
           </Text>
-          <Text style={{ fontSize: 14, color: "#444" }}>
+          <Text
+            style={{
+              fontSize: 14,
+              color: TEXT_SECONDARY,
+            }}
+          >
             {question.explanation}
           </Text>
         </View>
