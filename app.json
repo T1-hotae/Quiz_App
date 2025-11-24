@@ -24,6 +24,12 @@
     },
     "web": {
       "favicon": "./assets/ai_quiz_1024.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7b9dd532-cb3c-41da-9a70-fe933638ff94"
+      }
+    },
+    "owner": "hwanghotae"
   }
 }
