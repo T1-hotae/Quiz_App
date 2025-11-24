@@ -1,0 +1,58 @@
+name: EAS Build (Android, npm)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 👉 수동 실행도 가능하게
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Node.js 설정 (버전은 너 프로젝트에 맞게)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # 3. 의존성 설치 (npm)
+      - name: Install dependencies
+        # package-lock.json 있으면 npm ci, 없으면 npm install
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      # 4. EAS CLI 설치 (전역 설치)
+      - name: Install EAS CLI
+        run: |
+          npm install -g eas-cli
+
+      # 5. Expo 토큰 확인
+      - name: Check EXPO_TOKEN
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "❌ EXPO_TOKEN이 설정되지 않았습니다. GitHub Secrets에 추가하세요."
+            exit 1
+          fi
+          echo "✅ EXPO_TOKEN 감지됨"
+
+      # 6. EAS 빌드 실행 (Android)
+      - name: Run EAS Build (Android)
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          eas build --platform android --non-interactive
+          # 특정 프로파일 쓰고 싶으면:
+          # eas build --platform android --profile production --non-interactive
