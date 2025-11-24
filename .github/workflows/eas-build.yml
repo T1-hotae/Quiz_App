@@ -26,11 +26,7 @@ jobs:
       - name: Install dependencies
         # package-lock.json 있으면 npm ci, 없으면 npm install
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
+          npm install
 
       # 4. EAS CLI 설치 (전역 설치)
       - name: Install EAS CLI
