@@ -1,18 +1,14 @@
-// Import the functions you need from the SDKs you need
+// firebase.js
 import { initializeApp } from "firebase/app";
 import {
-  // React Native에서 세션 유지까지 하고 싶을 때
+  getAuth,
   initializeAuth,
-  getReactNativePersistence,
-  // getAuth,
+  // 웹에서 쓸 수도 있는 다른 것들...
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import { Platform } from "react-native";
+// ⬆️ expo 환경이면 web / ios / android 다 여기서 구분 가능
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXRU7ccncPbD_z4K9CHmvk0VP4ukspVEc",
@@ -24,15 +20,20 @@ const firebaseConfig = {
   measurementId: "G-ZDFC8ZNJYH",
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// React Native용 Auth 초기화 + AsyncStorage로 세션 유지
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+let auth;
 
-// 🗂 프로필 저장용 Firestore
+if (Platform.OS === "web") {
+  auth = getAuth(app);
+} else {
+  const { getReactNativePersistence } = require("firebase/auth");
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+}
+
+export { app, auth };
+
+// Firestore는 공통
 export const db = getFirestore(app);
-
-export default app;

@@ -8,11 +8,15 @@ import {
   useColorScheme,
 } from "react-native";
 import { QUIZZES } from "../src/data/quizzes";
+import { useAuth } from "../src/lib/auth-provider";
+import { db } from "../src/Firebase/firebase";
+import { doc, setDoc, increment } from "firebase/firestore";
 
 export default function QuizPlayScreen({ route, navigation }) {
   const { quizId } = route.params ?? {};
   const quiz = QUIZZES.find((q) => q.id === quizId);
 
+  const { user } = useAuth(); // ✅ 현재 로그인 유저
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [answered, setAnswered] = useState(false);
@@ -74,11 +78,35 @@ export default function QuizPlayScreen({ route, navigation }) {
     }
   };
 
-  const handleNext = () => {
+  // ✅ 퀴즈 결과를 Firestore에 누적 저장
+  const saveResultToProfile = async (finalScore) => {
+    if (!user) return; // 로그인 안 돼 있으면 저장 스킵
+
+    try {
+      const ref = doc(db, "users", user.uid);
+      const correctCount = finalScore;
+      const wrongCount = total - finalScore;
+
+      await setDoc(
+        ref,
+        {
+          quizCorrectCount: increment(correctCount),
+          quizWrongCount: increment(wrongCount),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.log("퀴즈 결과 저장 오류:", e);
+    }
+  };
+
+  const handleNext = async () => {
     const isLast = currentIndex === total - 1;
 
     if (isLast) {
       setIsFinished(true);
+      // 🔹 현재 score는 이미 마지막 문제까지 포함된 값
+      await saveResultToProfile(score);
       return;
     }
 
@@ -289,7 +317,7 @@ export default function QuizPlayScreen({ route, navigation }) {
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#4f46e5",
-            opacity: !answered ? 0.6 : pressed ? 0.7 : 1, // 답 안 골랐을 땐 약간 비활성 느낌
+            opacity: !answered ? 0.6 : pressed ? 0.7 : 1,
           },
         ]}
       >

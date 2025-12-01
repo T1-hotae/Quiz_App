@@ -54,8 +54,6 @@ export function AuthProvider({ children }) {
         createdAt: serverTimestamp(),
       });
     } catch (e) {
-      console.log("signUp error:", e);
-      // 에러메시지 예쁘게 매핑하고 싶으면 여기서 코드 분기 가능
       setError("회원가입 중 오류가 발생했습니다.");
       throw e;
     } finally {

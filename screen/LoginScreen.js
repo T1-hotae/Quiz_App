@@ -15,6 +15,7 @@ import { useAuth } from "../src/lib/auth-provider";
 
 export default function LoginScreen({ onGoRegister }) {
   const { signIn, loading, error } = useAuth();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
@@ -42,7 +43,7 @@ export default function LoginScreen({ onGoRegister }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: "#f9fafb" }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >

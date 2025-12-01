@@ -4,7 +4,7 @@
     "slug": "ai_quiz",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/ai_quiz_1024.png",
+    "icon": "./assets/quiz_intro.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {

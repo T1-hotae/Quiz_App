@@ -86,7 +86,7 @@ export default function RegisterScreen({ onGoLogin }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: "#f9fafb" }}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // 네비바 높이에 따라 조절 가능
     >
