@@ -1,8 +1,10 @@
 import ProfileScreen from "../screen/ProfileScreen";
 import QuizStack from "../tab/QuizStack";
+import AwardsScreen from "../screen/AwardsScreen";
+import ChatScreen from "../screen/ChatScreen";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AwardsScreen from "../screen/AwardsScreen";
 import { useColorScheme } from "react-native";
 
 const Tab = createBottomTabNavigator();
@@ -20,15 +22,17 @@ export default function MainTabs() {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
           } else if (route.name === "Awards") {
             iconName = focused ? "book" : "book-outline";
+          } else if (route.name === "Chat") {
+            // ✅ 채팅 탭 아이콘
+            iconName = focused ? "chatbubbles" : "chatbubbles-outline";
+          } else if (route.name === "Profile") {
+            iconName = focused ? "person" : "person-outline";
           }
 
           return <Ionicons name={iconName} size={26} color={color} />;
         },
-        // ✅ 다크/라이트 공통 옵션
         headerShown: false,
         tabBarActiveTintColor: isDark ? "#60a5fa" : "#3b82f6",
         tabBarInactiveTintColor: isDark ? "#6b7280" : "#9ca3af",
@@ -40,6 +44,7 @@ export default function MainTabs() {
     >
       <Tab.Screen name="Awards" component={AwardsScreen} />
       <Tab.Screen name="Home" component={QuizStack} />
+      <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
