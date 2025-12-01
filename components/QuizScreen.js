@@ -13,10 +13,11 @@ import { db } from "../src/Firebase/firebase";
 import { doc, setDoc, increment } from "firebase/firestore";
 
 export default function QuizPlayScreen({ route, navigation }) {
-  const { quizId } = route.params ?? {};
-  const quiz = QUIZZES.find((q) => q.id === quizId);
+  const { quizId, quiz: quizFromRoute } = route.params ?? {};
+  const quiz = quizFromRoute ?? QUIZZES.find((q) => q.id === quizId);
 
-  const { user } = useAuth(); // ✅ 현재 로그인 유저
+  const { user } = useAuth();
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [answered, setAnswered] = useState(false);
@@ -24,7 +25,6 @@ export default function QuizPlayScreen({ route, navigation }) {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  // 🔹 다크모드 감지
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -38,6 +38,7 @@ export default function QuizPlayScreen({ route, navigation }) {
   const CHOICE_CORRECT = isDark ? "#14532d" : "#bbf7d0";
   const CHOICE_WRONG = isDark ? "#7f1d1d" : "#fecaca";
 
+  // 🔹 퀴즈 자체가 없을 때
   if (!quiz) {
     return (
       <View style={{ flex: 1, padding: 24, backgroundColor: BG }}>
@@ -63,11 +64,58 @@ export default function QuizPlayScreen({ route, navigation }) {
     );
   }
 
-  const total = quiz.questions.length;
-  const question = quiz.questions[currentIndex];
+  // 🔥 여기서 퀴즈 문제 배열을 “안전하게” 추출
+  const questionsRaw =
+    Array.isArray(quiz.questions) && quiz.questions.length > 0
+      ? quiz.questions
+      : Array.isArray(quiz.items) && quiz.items.length > 0
+      ? quiz.items
+      : Array.isArray(quiz)
+      ? quiz
+      : [];
+
+  const questions = questionsRaw ?? [];
+
+  // 문제 배열 자체가 비어 있으면
+  if (!Array.isArray(questions) || questions.length === 0) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          padding: 24,
+          backgroundColor: BG,
+          justifyContent: "center",
+        }}
+      >
+        <Text style={{ color: TEXT_PRIMARY, marginBottom: 8 }}>
+          퀴즈 문제 데이터가 없습니다.
+        </Text>
+        <Pressable
+          onPress={() => navigation.goBack()}
+          style={({ pressed }) => [
+            {
+              marginTop: 8,
+              paddingVertical: 12,
+              borderRadius: 8,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: isDark ? "#1f2937" : "#e5e7eb",
+              opacity: pressed ? 0.7 : 1,
+            },
+          ]}
+        >
+          <Text style={{ fontWeight: "600", color: TEXT_PRIMARY }}>뒤로</Text>
+        </Pressable>
+      </View>
+    );
+  }
+
+  // ✅ 여기부터는 questions이 항상 “배열”이라고 가정 가능
+  const total = questions.length;
+  const question = questions[currentIndex];
 
   const handleSelectChoice = (idx) => {
-    if (answered) return; // 이미 답한 상태면 무시
+    if (answered) return;
 
     setSelectedIndex(idx);
     const correct = idx === question.answerIndex;
@@ -78,9 +126,8 @@ export default function QuizPlayScreen({ route, navigation }) {
     }
   };
 
-  // ✅ 퀴즈 결과를 Firestore에 누적 저장
   const saveResultToProfile = async (finalScore) => {
-    if (!user) return; // 로그인 안 돼 있으면 저장 스킵
+    if (!user) return;
 
     try {
       const ref = doc(db, "users", user.uid);
@@ -105,7 +152,6 @@ export default function QuizPlayScreen({ route, navigation }) {
 
     if (isLast) {
       setIsFinished(true);
-      // 🔹 현재 score는 이미 마지막 문제까지 포함된 값
       await saveResultToProfile(score);
       return;
     }
@@ -124,6 +170,9 @@ export default function QuizPlayScreen({ route, navigation }) {
     setScore(0);
     setIsFinished(false);
   };
+
+  // 👉 아래 나머지 JSX/로직은 네가 올린 코드 그대로 두면 됨
+  // (total, question, questions만 위에서 바뀐 걸로 사용)
 
   if (isFinished) {
     // ✅ 퀴즈 끝나고 결과 화면

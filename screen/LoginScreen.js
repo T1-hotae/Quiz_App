@@ -10,11 +10,16 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  useColorScheme,
 } from "react-native";
 import { useAuth } from "../src/lib/auth-provider";
+import { createStyles } from "./LoginScreenStyle";
 
 export default function LoginScreen({ onGoRegister }) {
   const { signIn, loading, error } = useAuth();
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
+  const styles = createStyles(isDark);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,6 +34,7 @@ export default function LoginScreen({ onGoRegister }) {
     touched.password && password.length < 6
       ? "비밀번호는 6자 이상이어야 합니다."
       : "";
+
   const canSubmit = /.+@.+\..+/.test(email) && password.length >= 6 && !loading;
 
   const submit = async () => {
@@ -43,37 +49,24 @@ export default function LoginScreen({ onGoRegister }) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: "#f9fafb" }}
+      style={styles.screen}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          padding: 20,
-          justifyContent: "center",
-        }}
+        contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={{ alignItems: "center" }}>
+        <View style={styles.logoWrapper}>
           <Image
             source={require("../assets/quiz_intro.png")}
             style={styles.logo}
           />
         </View>
 
-        <Text
-          style={{
-            color: "#111827",
-            fontSize: 26,
-            fontWeight: "800",
-            marginBottom: 16,
-          }}
-        >
-          로그인
-        </Text>
+        <Text style={styles.title}>로그인</Text>
 
-        <Text style={{ marginBottom: 6 }}>이메일</Text>
+        <Text style={styles.label}>이메일</Text>
         <TextInput
           testID="input-email"
           value={email}
@@ -82,32 +75,13 @@ export default function LoginScreen({ onGoRegister }) {
           autoCapitalize="none"
           keyboardType="email-address"
           placeholder="이메일을 입력하세요."
-          style={{
-            height: 48,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: emailErr ? "#f59e0b" : "#d1d5db",
-            paddingHorizontal: 12,
-            marginBottom: 4,
-          }}
+          placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
+          style={[styles.input, emailErr && styles.inputError]}
         />
-        {emailErr ? (
-          <Text style={{ color: "#b45309", marginBottom: 8 }}>{emailErr}</Text>
-        ) : null}
+        {emailErr ? <Text style={styles.errorText}>{emailErr}</Text> : null}
 
-        <Text style={{ marginBottom: 6, marginTop: 8 }}>비밀번호</Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: passErr ? "#f59e0b" : "#d1d5db",
-            borderRadius: 10,
-            height: 48,
-            paddingHorizontal: 12,
-            marginBottom: 10,
-          }}
-        >
+        <Text style={[styles.label, { marginTop: 8 }]}>비밀번호</Text>
+        <View style={[styles.passwordRow, passErr && styles.inputError]}>
           <TextInput
             testID="input-password"
             value={password}
@@ -115,23 +89,17 @@ export default function LoginScreen({ onGoRegister }) {
             onBlur={() => setTouched((t) => ({ ...t, password: true }))}
             secureTextEntry={secure}
             placeholder="비밀번호"
-            style={{ flex: 1 }}
+            placeholderTextColor={isDark ? "#6b7280" : "#9ca3af"}
+            style={styles.passwordInput}
           />
           <Pressable onPress={() => setSecure((s) => !s)} hitSlop={8}>
-            <Text style={{ color: "#2563eb", fontWeight: "700" }}>
-              {secure ? "보기" : "숨기기"}
-            </Text>
+            <Text style={styles.toggleText}>{secure ? "보기" : "숨기기"}</Text>
           </Pressable>
         </View>
-        {passErr ? (
-          <Text style={{ color: "#b45309", marginBottom: 8 }}>{passErr}</Text>
-        ) : null}
+        {passErr ? <Text style={styles.errorText}>{passErr}</Text> : null}
 
         {error ? (
-          <Text
-            testID="text-error"
-            style={{ color: "#dc2626", marginTop: 6, marginBottom: 8 }}
-          >
+          <Text testID="text-error" style={styles.globalError}>
             {error}
           </Text>
         ) : null}
@@ -140,41 +108,19 @@ export default function LoginScreen({ onGoRegister }) {
           testID="btn-submit"
           onPress={submit}
           disabled={!canSubmit}
-          style={{
-            height: 48,
-            borderRadius: 12,
-            backgroundColor: canSubmit ? "#4f46e5" : "#9ca3af",
-            alignItems: "center",
-            justifyContent: "center",
-            marginTop: 8,
-          }}
+          style={styles.submitButton(canSubmit)}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={{ color: "#fff", fontWeight: "700" }}>로그인</Text>
+            <Text style={styles.submitText}>로그인</Text>
           )}
         </Pressable>
 
-        <Pressable
-          onPress={onGoRegister}
-          style={{ marginTop: 16, alignSelf: "center" }}
-        >
-          <Text style={{ color: "#2563eb", fontWeight: "600" }}>
-            아직 계정이 없나요? 회원가입
-          </Text>
+        <Pressable onPress={onGoRegister} style={styles.linkWrapper}>
+          <Text style={styles.linkText}>아직 계정이 없나요? 회원가입</Text>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  logo: {
-    width: 160,
-    height: 160,
-    borderRadius: 15,
-    marginBottom: 100,
-    marginTop: -50,
-  },
-});

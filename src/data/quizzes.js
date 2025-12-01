@@ -1,5 +1,5 @@
 import { NN_QUESTIONS } from "./nn_questions";
-import { ML_QUESTIONS } from "./nn_questions";
+import { ML_QUESTIONS } from "./ml_questions";
 
 export const QUIZZES = [
   {

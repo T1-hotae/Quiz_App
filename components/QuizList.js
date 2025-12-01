@@ -1,3 +1,4 @@
+// QuizList.js
 import { Text, TouchableOpacity, ScrollView, View } from "react-native";
 import { QUIZZES } from "../src/data/quizzes";
 import { getStyles } from "./QuizListStyle";
@@ -19,7 +20,34 @@ export default function QuizList({ navigation }) {
         </Text>
       </View>
 
-      {/* 퀴즈 카드들 */}
+      {/* ✅ GPT 신경망 퀴즈 카드 (새로 추가) */}
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={[styles.card, { borderWidth: 1, borderColor: "#4f46e5" }]}
+        onPress={() => navigation.navigate("GptQuizDetail")}
+      >
+        <View style={styles.iconCircle}>
+          <Text style={styles.iconEmoji}>🧠</Text>
+        </View>
+
+        <View style={styles.cardBody}>
+          <Text style={styles.cardTitle} numberOfLines={1}>
+            신경망 GPT 퀴즈
+          </Text>
+          <Text style={styles.cardDescription} numberOfLines={2}>
+            GPT가 즉석에서 만들어주는 신경망 기초(퍼셉트론, 활성화 함수, 역전파)
+            객관식 퀴즈를 풀어보세요.
+          </Text>
+          <View style={styles.cardFooter}>
+            <View style={styles.chip}>
+              <Text style={styles.chipText}>GPT로 생성</Text>
+            </View>
+            <Text style={styles.metaText}>5문제 · 랜덤 출제</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* 기존 퀴즈 카드들 */}
       {QUIZZES.map((quiz) => (
         <TouchableOpacity
           key={quiz.id}
