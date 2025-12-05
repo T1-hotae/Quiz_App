@@ -14,15 +14,21 @@ import { useState } from "react";
 import { useAuth } from "../../src/lib/auth-provider";
 import { createStyles } from "./RegisterScreenStyle";
 
+const fieldGap = 10;
+
 export default function RegisterScreen({ onGoLogin }) {
   const { signUp, loading, error } = useAuth();
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const styles = createStyles(isDark);
 
+  const headerHeight = Platform.OS === "ios" ? 90 : 0;
+
+  const placeholderColor = isDark ? "#6b7280" : "#9ca3af";
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [department, setDepartment] = useState(""); // ✅ 학과
+  const [department, setDepartment] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
@@ -34,22 +40,17 @@ export default function RegisterScreen({ onGoLogin }) {
     passwordConfirm: false,
   });
 
-  // ✅ 간단 검증들
   const emailErr =
     touched.email && !/.+@.+\..+/.test(email)
       ? "올바른 이메일 형식이 아닙니다."
       : "";
-
   const nameErr = touched.name && !name.trim() ? "이름을 입력해주세요." : "";
-
   const deptErr =
     touched.department && !department.trim() ? "학과를 입력해주세요." : "";
-
   const passErr =
     touched.password && password.length < 6
       ? "비밀번호는 6자 이상이어야 합니다."
       : "";
-
   const confirmErr =
     touched.passwordConfirm && password !== passwordConfirm
       ? "비밀번호가 서로 일치하지 않습니다."
@@ -79,21 +80,22 @@ export default function RegisterScreen({ onGoLogin }) {
         name: name.trim(),
         department: department.trim(),
       });
-      // 회원가입 성공하면 onAuthStateChanged로 로그인 상태가 되고
-      // Router에서 isAuthenticated=true가 되면서 HomeScreen으로 넘어가게 됨
-    } catch (_) {
-      // 에러는 Context의 error로 표시
-    }
+    } catch (_) {}
   };
 
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : 0}
     >
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingVertical: 32, // 🔹 위아래 여유 (필요하면 40~48까지도)
+          },
+        ]}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.inner}>
@@ -107,19 +109,14 @@ export default function RegisterScreen({ onGoLogin }) {
 
           {/* 이름 */}
           <View style={{ marginBottom: fieldGap }}>
-            <Text style={{ marginBottom: 6 }}>이름</Text>
+            <Text style={styles.label}>이름</Text>
             <TextInput
               value={name}
               onChangeText={setName}
               onBlur={() => setTouched((t) => ({ ...t, name: true }))}
               placeholder="이름 입력"
-              style={{
-                height: 48,
-                borderWidth: 1,
-                borderColor: nameErr ? "#f59e0b" : "#d1d5db",
-                borderRadius: 10,
-                paddingHorizontal: 12,
-              }}
+              style={[styles.input, nameErr && styles.inputError]}
+              placeholderTextColor={placeholderColor}
             />
             {nameErr ? (
               <Text style={{ color: "#b45309", marginTop: 4 }}>{nameErr}</Text>
@@ -128,28 +125,21 @@ export default function RegisterScreen({ onGoLogin }) {
 
           {/* 학과 */}
           <View style={{ marginBottom: fieldGap }}>
-            <Text style={{ marginBottom: 6 }}>학과</Text>
+            <Text style={styles.label}>학과</Text>
             <TextInput
               value={department}
               onChangeText={setDepartment}
               onBlur={() => setTouched((t) => ({ ...t, department: true }))}
               placeholder="학과 입력"
-              style={{
-                height: 48,
-                borderWidth: 1,
-                borderColor: deptErr ? "#f59e0b" : "#d1d5db",
-                borderRadius: 10,
-                paddingHorizontal: 12,
-              }}
+              style={[styles.input, nameErr && styles.inputError]}
+              placeholderTextColor={placeholderColor}
             />
-            {deptErr ? (
-              <Text style={{ color: "#b45309", marginTop: 4 }}>{deptErr}</Text>
-            ) : null}
+            {nameErr ? <Text style={styles.errorText}>{nameErr}</Text> : null}
           </View>
 
           {/* 이메일 */}
           <View style={{ marginBottom: fieldGap }}>
-            <Text style={{ marginBottom: 6 }}>이메일</Text>
+            <Text style={styles.label}>이메일</Text>
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -157,44 +147,30 @@ export default function RegisterScreen({ onGoLogin }) {
               autoCapitalize="none"
               keyboardType="email-address"
               placeholder="이메일 입력"
-              style={{
-                height: 48,
-                borderWidth: 1,
-                borderColor: emailErr ? "#f59e0b" : "#d1d5db",
-                borderRadius: 10,
-                paddingHorizontal: 12,
-              }}
+              style={[styles.input, deptErr && styles.inputError]}
+              placeholderTextColor={placeholderColor}
             />
-            {emailErr ? (
-              <Text style={{ color: "#b45309", marginTop: 4 }}>{emailErr}</Text>
-            ) : null}
+            {emailErr ? <Text style={styles.errorText}>{emailErr}</Text> : null}
           </View>
 
           {/* 비밀번호 */}
           <View style={{ marginBottom: fieldGap }}>
-            <Text style={{ marginBottom: 6 }}>비밀번호</Text>
+            <Text style={styles.label}>비밀번호</Text>
             <TextInput
               value={password}
               onChangeText={setPassword}
               secureTextEntry={true}
               onBlur={() => setTouched((t) => ({ ...t, password: true }))}
               placeholder="비밀번호 (6자 이상)"
-              style={{
-                height: 48,
-                borderWidth: 1,
-                borderColor: passErr ? "#f59e0b" : "#d1d5db",
-                borderRadius: 10,
-                paddingHorizontal: 12,
-              }}
+              style={[styles.input, deptErr && styles.inputError]}
+              placeholderTextColor={placeholderColor}
             />
-            {passErr ? (
-              <Text style={{ color: "#b45309", marginTop: 4 }}>{passErr}</Text>
-            ) : null}
+            {passErr ? <Text style={styles.errorText}>{passErr}</Text> : null}
           </View>
 
           {/* 비밀번호 확인 */}
           <View style={{ marginBottom: fieldGap }}>
-            <Text style={{ marginBottom: 6 }}>비밀번호 확인</Text>
+            <Text style={styles.label}>비밀번호 확인</Text>
             <TextInput
               value={passwordConfirm}
               onChangeText={setPasswordConfirm}
@@ -203,27 +179,18 @@ export default function RegisterScreen({ onGoLogin }) {
                 setTouched((t) => ({ ...t, passwordConfirm: true }))
               }
               placeholder="비밀번호 다시 입력"
-              style={{
-                height: 48,
-                borderWidth: 1,
-                borderColor: confirmErr ? "#f59e0b" : "#d1d5db",
-                borderRadius: 10,
-                paddingHorizontal: 12,
-              }}
+              style={[styles.input, deptErr && styles.inputError]}
+              placeholderTextColor={placeholderColor}
             />
             {confirmErr ? (
-              <Text style={{ color: "#b45309", marginTop: 4 }}>
-                {confirmErr}
-              </Text>
+              <Text style={styles.errorText}>{confirmErr}</Text>
             ) : null}
           </View>
 
-          {/* 서버에서 온 에러 */}
           {error ? (
             <Text style={{ color: "#dc2626", marginBottom: 8 }}>{error}</Text>
           ) : null}
 
-          {/* 가입 버튼 */}
           <Pressable
             onPress={submit}
             disabled={!canSubmit}
@@ -243,7 +210,6 @@ export default function RegisterScreen({ onGoLogin }) {
             )}
           </Pressable>
 
-          {/* 로그인으로 이동 */}
           <Pressable
             onPress={onGoLogin}
             style={{ marginTop: 16, alignSelf: "center" }}

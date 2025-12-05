@@ -83,8 +83,22 @@ export default function ProfileScreen() {
     fetchProfile();
   }, [user]);
 
-  const correctCount = profile?.quizCorrectCount ?? 0;
-  const wrongCount = profile?.quizWrongCount ?? 0;
+  const quizStats = profile?.quizStats || {};
+
+  // quizStats가 있으면 그걸로 합산, 없으면 예전 필드 사용 (백업용)
+  let correctCount = profile?.quizCorrectCount ?? 0;
+  let wrongCount = profile?.quizWrongCount ?? 0;
+
+  if (quizStats && typeof quizStats === "object") {
+    correctCount = 0;
+    wrongCount = 0;
+
+    Object.values(quizStats).forEach((stat) => {
+      if (!stat || typeof stat !== "object") return;
+      correctCount += stat.correctCount || 0;
+      wrongCount += stat.wrongCount || 0;
+    });
+  }
 
   // 🔹 아바타 변경 & Firestore 저장
   const handleSelectAvatar = async (key) => {

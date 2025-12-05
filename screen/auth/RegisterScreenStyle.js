@@ -27,7 +27,7 @@ export const createStyles = (isDark) =>
     title: {
       fontSize: 26,
       fontWeight: "800",
-      marginBottom: 20,
+      marginBottom: 10,
       color: isDark ? "#f9fafb" : "#111827",
     },
     label: {
@@ -52,7 +52,7 @@ export const createStyles = (isDark) =>
     },
     globalError: {
       color: "#dc2626",
-      marginBottom: 8,
+      marginBottom: 4,
     },
     submitButton: (canSubmit) => ({
       height: 48,

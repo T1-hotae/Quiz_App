@@ -6,7 +6,6 @@ import {
   Pressable,
   ActivityIndicator,
   Image,
-  StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -20,6 +19,8 @@ export default function LoginScreen({ onGoRegister }) {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const styles = createStyles(isDark);
+
+  const headerHeight = Platform.OS === "ios" ? 90 : 0;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,8 +51,8 @@ export default function LoginScreen({ onGoRegister }) {
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? headerHeight : 0}
     >
       <ScrollView
         contentContainerStyle={styles.scrollContent}

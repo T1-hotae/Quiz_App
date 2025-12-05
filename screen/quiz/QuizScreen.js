@@ -110,7 +110,6 @@ export default function QuizPlayScreen({ route, navigation }) {
     );
   }
 
-  // ✅ 여기부터는 questions이 항상 “배열”이라고 가정 가능
   const total = questions.length;
   const question = questions[currentIndex];
 
@@ -131,14 +130,24 @@ export default function QuizPlayScreen({ route, navigation }) {
 
     try {
       const ref = doc(db, "users", user.uid);
+
       const correctCount = finalScore;
       const wrongCount = total - finalScore;
+
+      // 퀴즈 식별용 key (id가 있으면 그걸 쓰고, 없으면 title 이나 "unknown")
+      const quizKey = String(quiz?.id ?? quizId ?? "unknown");
 
       await setDoc(
         ref,
         {
+          // 1) 예전 전체 누적 값도 계속 쓰고 싶으면 그대로 유지
           quizCorrectCount: increment(correctCount),
           quizWrongCount: increment(wrongCount),
+
+          // 2) 퀴즈별 누적 값 (동적 필드 경로 사용)
+          [`quizStats.${quizKey}.title`]: quiz.title ?? "",
+          [`quizStats.${quizKey}.correctCount`]: increment(correctCount),
+          [`quizStats.${quizKey}.wrongCount`]: increment(wrongCount),
         },
         { merge: true }
       );
@@ -146,7 +155,6 @@ export default function QuizPlayScreen({ route, navigation }) {
       console.log("퀴즈 결과 저장 오류:", e);
     }
   };
-
   const handleNext = async () => {
     const isLast = currentIndex === total - 1;
 
@@ -170,9 +178,6 @@ export default function QuizPlayScreen({ route, navigation }) {
     setScore(0);
     setIsFinished(false);
   };
-
-  // 👉 아래 나머지 JSX/로직은 네가 올린 코드 그대로 두면 됨
-  // (total, question, questions만 위에서 바뀐 걸로 사용)
 
   if (isFinished) {
     // ✅ 퀴즈 끝나고 결과 화면

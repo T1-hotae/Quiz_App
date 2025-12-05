@@ -8,7 +8,7 @@ export const createStyles = (isDark) =>
     },
     scrollContent: {
       flexGrow: 1,
-      padding: 20,
+      padding: 24,
       justifyContent: "center",
     },
     logoWrapper: {
