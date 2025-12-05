@@ -9,18 +9,18 @@ import {
   Modal,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { useAuth } from "../src/lib/auth-provider";
+import { useAuth } from "../../src/lib/auth-provider";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../src/Firebase/firebase";
+import { db } from "../../services/firebase";
 
 // 🔹 아바타 이미지 매핑
 const AVATARS = {
-  Boy: require("../assets/Profile/Boy.png"),
-  Girl: require("../assets/Profile/Girl.png"),
-  Man: require("../assets/Profile/Man.png"),
-  Woman: require("../assets/Profile/Woman.png"),
-  Grandpa: require("../assets/Profile/Grandpa.png"),
-  Grandma: require("../assets/Profile/Grandma.png"),
+  Boy: require("../../assets/Profile/Boy.png"),
+  Girl: require("../../assets/Profile/Girl.png"),
+  Man: require("../../assets/Profile/Man.png"),
+  Woman: require("../../assets/Profile/Woman.png"),
+  Grandpa: require("../../assets/Profile/Grandpa.png"),
+  Grandma: require("../../assets/Profile/Grandma.png"),
 };
 
 const AVATAR_KEYS = Object.keys(AVATARS); // ["Boy", "Girl", "Grandma", ...]

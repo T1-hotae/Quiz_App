@@ -1,6 +1,5 @@
-// QuizList.js
 import { Text, TouchableOpacity, ScrollView, View } from "react-native";
-import { QUIZZES } from "../src/data/quizzes";
+import { QUIZZES } from "../../src/data/quizzes";
 import { getStyles } from "./QuizListStyle";
 import { useColorScheme } from "react-native";
 

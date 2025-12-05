@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import QuizDetail from "../components/QuizDetail";
-import QuizList from "../components/QuizList";
-import QuizPlayScreen from "../components/QuizScreen";
-import GptQuizDetail from "../components/GptQuizDetail";
+import QuizDetail from "../../screen/quiz/QuizDetail";
+import QuizList from "../../screen/quiz/QuizList";
+import QuizPlayScreen from "../../screen/quiz/QuizScreen";
+import GptQuizDetail from "../../screen/quiz/GptQuizDetail";
 
 /** ========== 네비게이터 구성 ========== */
 const Stack = createNativeStackNavigator();

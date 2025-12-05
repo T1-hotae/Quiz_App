@@ -1,6 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import MainTabs from "../tab/MainTabs";
-import LogoutScreen from "../screen/LogoutScreen";
+import MainTabs from "../../src/navigation/MainTabs";
+import LogoutScreen from "../../screen/auth/LogoutScreen";
 import { useColorScheme } from "react-native";
 
 const Drawer = createDrawerNavigator();

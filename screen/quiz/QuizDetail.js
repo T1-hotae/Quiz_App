@@ -1,5 +1,5 @@
 import { View, Text, Pressable, useColorScheme } from "react-native";
-import { QUIZZES } from "../src/data/quizzes";
+import { QUIZZES } from "../../src/data/quizzes";
 
 export default function QuizDetail({ route, navigation }) {
   const { quizId } = route.params ?? {};

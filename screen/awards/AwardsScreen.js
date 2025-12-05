@@ -1,6 +1,5 @@
-// AwardsScreen.js
 import { ScrollView, View, Text } from "react-native";
-import { achievements } from "../src/data/achievement";
+import { achievements } from "../../src/data/achievement";
 import { createStyles } from "./AwardScreenStyle";
 import { useColorScheme } from "react-native";
 

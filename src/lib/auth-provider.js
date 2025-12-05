@@ -5,7 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut as fbSignOut,
 } from "firebase/auth";
-import { auth, db } from "../Firebase/firebase";
+import { auth, db } from "../../services/firebase";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 const AuthContext = createContext(null);

@@ -1,4 +1,3 @@
-// screen/ChatScreen.js
 import { useEffect, useState } from "react";
 import {
   View,
@@ -15,7 +14,7 @@ import {
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 // Firebase 설정
-import { db, auth } from "../src/Firebase/firebase";
+import { db, auth } from "../../services/firebase";
 
 // Firestore helper
 import {
@@ -28,7 +27,7 @@ import {
 } from "firebase/firestore";
 
 // Auth provider
-import { useAuth } from "../src/lib/auth-provider";
+import { useAuth } from "../../src/lib/auth-provider";
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);

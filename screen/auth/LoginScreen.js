@@ -12,7 +12,7 @@ import {
   Platform,
   useColorScheme,
 } from "react-native";
-import { useAuth } from "../src/lib/auth-provider";
+import { useAuth } from "../../src/lib/auth-provider";
 import { createStyles } from "./LoginScreenStyle";
 
 export default function LoginScreen({ onGoRegister }) {
@@ -59,7 +59,7 @@ export default function LoginScreen({ onGoRegister }) {
       >
         <View style={styles.logoWrapper}>
           <Image
-            source={require("../assets/quiz_intro.png")}
+            source={require("../../assets/quiz_intro.png")}
             style={styles.logo}
           />
         </View>

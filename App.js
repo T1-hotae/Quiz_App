@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
+import Router from "./src/navigation/router";
 import { AuthProvider } from "./src/lib/auth-provider";
-import Router from "./src/router";
 import { View, KeyboardAvoidingView, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 

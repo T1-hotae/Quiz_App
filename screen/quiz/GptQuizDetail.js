@@ -1,5 +1,4 @@
-// GptQuizDetail.js
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -7,7 +6,7 @@ import {
   ActivityIndicator,
   useColorScheme,
 } from "react-native";
-import { fetchGptQuiz } from "../src/gptQuiz";
+import { fetchGptQuiz } from "../../services/gptQuiz";
 
 export default function GptQuizDetail({ navigation }) {
   const colorScheme = useColorScheme();

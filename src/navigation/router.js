@@ -1,8 +1,8 @@
 import { ScrollView } from "react-native";
-import RegisterScreen from "../screen/RegisterScreen";
-import LoginScreen from "../screen/LoginScreen";
-import AppDrawer from "./AppDrawer";
-import { useAuth } from "./lib/auth-provider";
+import RegisterScreen from "../../screen/auth/RegisterScreen";
+import LoginScreen from "../../screen/auth/LoginScreen";
+import AppDrawer from "../../components/common/AppDrawer";
+import { useAuth } from "../lib/auth-provider";
 import { useState } from "react";
 
 export default function Router() {

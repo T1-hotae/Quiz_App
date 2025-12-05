@@ -9,10 +9,9 @@ import {
   ScrollView,
   Platform,
   useColorScheme,
-  StyleSheet,
 } from "react-native";
 import { useState } from "react";
-import { useAuth } from "../src/lib/auth-provider";
+import { useAuth } from "../../src/lib/auth-provider";
 import { createStyles } from "./RegisterScreenStyle";
 
 export default function RegisterScreen({ onGoLogin }) {
@@ -21,7 +20,71 @@ export default function RegisterScreen({ onGoLogin }) {
   const isDark = colorScheme === "dark";
   const styles = createStyles(isDark);
 
-  // ... (state, validate, submit 전부 기존 코드 그대로)
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [department, setDepartment] = useState(""); // ✅ 학과
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+
+  const [touched, setTouched] = useState({
+    email: false,
+    name: false,
+    department: false,
+    password: false,
+    passwordConfirm: false,
+  });
+
+  // ✅ 간단 검증들
+  const emailErr =
+    touched.email && !/.+@.+\..+/.test(email)
+      ? "올바른 이메일 형식이 아닙니다."
+      : "";
+
+  const nameErr = touched.name && !name.trim() ? "이름을 입력해주세요." : "";
+
+  const deptErr =
+    touched.department && !department.trim() ? "학과를 입력해주세요." : "";
+
+  const passErr =
+    touched.password && password.length < 6
+      ? "비밀번호는 6자 이상이어야 합니다."
+      : "";
+
+  const confirmErr =
+    touched.passwordConfirm && password !== passwordConfirm
+      ? "비밀번호가 서로 일치하지 않습니다."
+      : "";
+
+  const canSubmit =
+    !loading &&
+    /.+@.+\..+/.test(email) &&
+    name.trim().length > 0 &&
+    department.trim().length > 0 &&
+    password.length >= 6 &&
+    password === passwordConfirm;
+
+  const submit = async () => {
+    setTouched({
+      email: true,
+      name: true,
+      department: true,
+      password: true,
+      passwordConfirm: true,
+    });
+    if (!canSubmit) return;
+    try {
+      await signUp({
+        email: email.trim(),
+        password,
+        name: name.trim(),
+        department: department.trim(),
+      });
+      // 회원가입 성공하면 onAuthStateChanged로 로그인 상태가 되고
+      // Router에서 isAuthenticated=true가 되면서 HomeScreen으로 넘어가게 됨
+    } catch (_) {
+      // 에러는 Context의 error로 표시
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -36,7 +99,7 @@ export default function RegisterScreen({ onGoLogin }) {
         <View style={styles.inner}>
           <View style={styles.logoWrapper}>
             <Image
-              source={require("../assets/quiz_intro.png")}
+              source={require("../../assets/quiz_intro.png")}
               style={styles.logo}
             />
           </View>

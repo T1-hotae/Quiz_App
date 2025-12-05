@@ -1,6 +1,3 @@
-// src/api/gptQuiz.js
-
-// Cloudflare Worker URL (실제 주소로 바꿔!)
 const WORKER_URL = "https://ai-quiz-gpt-proxy.hotae0321.workers.dev";
 
 export async function fetchGptQuiz(options = {}) {

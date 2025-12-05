@@ -7,9 +7,9 @@ import {
   Pressable,
   useColorScheme,
 } from "react-native";
-import { QUIZZES } from "../src/data/quizzes";
-import { useAuth } from "../src/lib/auth-provider";
-import { db } from "../src/Firebase/firebase";
+import { QUIZZES } from "../../src/data/quizzes";
+import { useAuth } from "../../src/lib/auth-provider";
+import { db } from "../../services/firebase";
 import { doc, setDoc, increment } from "firebase/firestore";
 
 export default function QuizPlayScreen({ route, navigation }) {

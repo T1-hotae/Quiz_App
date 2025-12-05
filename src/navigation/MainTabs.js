@@ -1,11 +1,11 @@
-import ProfileScreen from "../screen/ProfileScreen";
-import QuizStack from "../tab/QuizStack";
-import AwardsScreen from "../screen/AwardsScreen";
-import ChatScreen from "../screen/ChatScreen";
+import QuizStack from "./QuizStack";
+import ProfileScreen from "../../screen/profile/ProfileScreen";
+import AwardsScreen from "../../screen/awards/AwardsScreen";
+import ChatScreen from "../../screen/chat/ChatScreen";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { useColorScheme } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Tab = createBottomTabNavigator();
 

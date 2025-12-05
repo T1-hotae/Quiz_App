@@ -1,4 +1,3 @@
-// firebase.js
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -8,7 +7,6 @@ import {
 import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
-// ⬆️ expo 환경이면 web / ios / android 다 여기서 구분 가능
 
 const firebaseConfig = {
   apiKey: "AIzaSyBXRU7ccncPbD_z4K9CHmvk0VP4ukspVEc",

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { View, Text } from "react-native";
-import { useAuth } from "../src/lib/auth-provider";
+import { useAuth } from "../../src/lib/auth-provider";
 
 export default function LogoutScreen() {
   const { signOut } = useAuth();
