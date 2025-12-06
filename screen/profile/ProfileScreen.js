@@ -7,8 +7,9 @@ import {
   ActivityIndicator,
   useColorScheme,
   Modal,
+  RefreshControl,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../src/lib/auth-provider";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../services/firebase";
@@ -34,6 +35,8 @@ export default function ProfileScreen() {
   const [avatarModalVisible, setAvatarModalVisible] = useState(false);
   const [savingAvatar, setSavingAvatar] = useState(false);
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -43,15 +46,22 @@ export default function ProfileScreen() {
   const TEXT_SECONDARY = isDark ? "#9ca3af" : "#6b7280";
   const BORDER_SOFT = isDark ? "#1f2937" : "#e5e7eb";
 
-  useEffect(() => {
-    // 로그인 안 돼 있으면 그냥 끝
-    if (!user) {
-      setLoading(false);
-      return;
-    }
+  const fetchProfile = useCallback(
+    async (opts = { isRefresh: false }) => {
+      if (!user) {
+        // 로그인 안 돼 있으면 바로 종료
+        setLoading(false);
+        setRefreshing(false);
+        return;
+      }
 
-    const fetchProfile = async () => {
       try {
+        if (opts.isRefresh) {
+          setRefreshing(true);
+        } else {
+          setLoading(true);
+        }
+
         const ref = doc(db, "users", user.uid); // users/{uid}
         const snap = await getDoc(ref);
 
@@ -61,10 +71,9 @@ export default function ProfileScreen() {
           if (data.avatarKey && AVATARS[data.avatarKey]) {
             setAvatarKey(data.avatarKey);
           } else {
-            setAvatarKey("Boy"); // 기본값
+            setAvatarKey("Boy");
           }
         } else {
-          // 혹시 문서가 없으면 기본값
           const defaultProfile = {
             name: user.displayName || "",
             email: user.email || "",
@@ -76,20 +85,31 @@ export default function ProfileScreen() {
       } catch (e) {
         console.log("프로필 불러오기 오류:", e);
       } finally {
-        setLoading(false);
+        if (opts.isRefresh) {
+          setRefreshing(false);
+        } else {
+          setLoading(false);
+        }
       }
-    };
+    },
+    [user]
+  );
 
+  // ✅ 2) 최초 로딩용 useEffect
+  useEffect(() => {
     fetchProfile();
-  }, [user]);
-
+  }, [fetchProfile]);
   const quizStats = profile?.quizStats || {};
 
   // quizStats가 있으면 그걸로 합산, 없으면 예전 필드 사용 (백업용)
   let correctCount = profile?.quizCorrectCount ?? 0;
   let wrongCount = profile?.quizWrongCount ?? 0;
 
-  if (quizStats && typeof quizStats === "object") {
+  if (
+    quizStats &&
+    typeof quizStats === "object" &&
+    Object.keys(quizStats).length > 0
+  ) {
     correctCount = 0;
     wrongCount = 0;
 
@@ -177,6 +197,14 @@ export default function ProfileScreen() {
           backgroundColor: BG,
           flexGrow: 1,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => fetchProfile({ isRefresh: true })}
+            tintColor={TEXT_PRIMARY} // iOS 인디케이터 색
+            colors={["#3b82f6"]} // Android 인디케이터 색
+          />
+        }
       >
         {/* 프로필 카드 */}
         <View

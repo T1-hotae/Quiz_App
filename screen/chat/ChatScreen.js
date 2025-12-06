@@ -29,9 +29,13 @@ import {
 // Auth provider
 import { useAuth } from "../../src/lib/auth-provider";
 
+import { chatStyles as styles } from "./ChatScreenStyle";
+
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
+
+  const [userProfiles, setUserProfiles] = useState({});
 
   const { user } = useAuth();
   const colorScheme = useColorScheme();
@@ -67,6 +71,19 @@ export default function ChatScreen() {
     return unsubscribe;
   }, [user]);
 
+  // 🔹 users 컬렉션 구독 (uid -> 프로필)
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+      const map = {};
+      snapshot.forEach((doc) => {
+        map[doc.id] = doc.data(); // doc.id === uid
+      });
+      setUserProfiles(map);
+    });
+
+    return unsubscribe;
+  }, []);
+
   // 🔹 메시지 전송
   const sendMessage = async () => {
     const currentUser = auth.currentUser;
@@ -88,45 +105,58 @@ export default function ChatScreen() {
   };
 
   const renderItem = ({ item }) => {
-    const isMe = item.userId === auth.currentUser?.uid;
+    const currentUid = auth.currentUser?.uid;
+    const isMe = item.userId === currentUid;
+
+    const profile = userProfiles[item.userId];
+    const displayName = profile?.name || item.userName || "익명";
 
     return (
       <View
         style={[
           styles.messageRow,
-          { justifyContent: isMe ? "flex-end" : "flex-start" }, // ✅ 오른쪽 / 왼쪽 정렬
+          { justifyContent: isMe ? "flex-end" : "flex-start" },
         ]}
       >
-        {!isMe && (
-          <Text style={[styles.userName, { color: TEXT_SECONDARY }]}>
-            {item.userName}
-          </Text>
-        )}
-
+        {/* 이름 + 말풍선을 세로로 묶는 래퍼 */}
         <View
           style={[
-            styles.messageBubble,
-            isMe ? styles.bubbleMe : styles.bubbleOther,
-            {
-              backgroundColor: isMe ? BUBBLE_ME : BUBBLE_OTHER,
-            },
+            styles.messageWrapper,
+            { alignItems: isMe ? "flex-end" : "flex-start" },
           ]}
         >
-          {isMe && (
+          {/* 🔹 상대방일 때만 위에 이름 표시 */}
+          {!isMe && (
             <Text
-              style={[styles.userName, { color: "#e5e7eb", marginBottom: 2 }]}
+              style={[
+                styles.userName,
+                { color: TEXT_SECONDARY, marginBottom: 2 },
+              ]}
             >
-              {item.userName}
+              {displayName}
             </Text>
           )}
-          <Text
-            style={{
-              color: isMe ? "#f9fafb" : TEXT_PRIMARY,
-              fontSize: 14,
-            }}
+
+          <View
+            style={[
+              styles.messageBubble,
+              isMe ? styles.bubbleMe : styles.bubbleOther,
+              {
+                backgroundColor: isMe ? BUBBLE_ME : BUBBLE_OTHER,
+                alignSelf: isMe ? "flex-end" : "flex-start",
+              },
+            ]}
           >
-            {item.text}
-          </Text>
+            {/* 🔹 내 메시지에는 이름 안 보이게! */}
+            <Text
+              style={{
+                color: isMe ? "#f9fafb" : TEXT_PRIMARY,
+                fontSize: 14,
+              }}
+            >
+              {item.text}
+            </Text>
+          </View>
         </View>
       </View>
     );
@@ -205,61 +235,3 @@ export default function ChatScreen() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  list: {
-    flex: 1,
-  },
-  // 한 줄(내 메시지 / 상대 메시지)을 담는 컨테이너
-  messageRow: {
-    width: "100%",
-    flexDirection: "row",
-    marginVertical: 4,
-  },
-  messageBubble: {
-    maxWidth: "75%",
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderRadius: 16,
-  },
-  bubbleMe: {
-    borderTopRightRadius: 4,
-    borderTopLeftRadius: 16,
-  },
-  bubbleOther: {
-    borderTopRightRadius: 16,
-    borderTopLeftRadius: 4,
-  },
-  userName: {
-    fontSize: 10,
-  },
-  inputRow: {
-    flexDirection: "row",
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-    borderTopWidth: 1,
-  },
-  input: {
-    flex: 1,
-    minHeight: 40,
-    maxHeight: 100,
-    borderWidth: 1,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 8,
-    marginRight: 8,
-    fontSize: 14,
-  },
-  sendButton: {
-    alignSelf: "flex-end",
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 999,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

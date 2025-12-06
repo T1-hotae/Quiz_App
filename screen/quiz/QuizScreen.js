@@ -10,7 +10,7 @@ import {
 import { QUIZZES } from "../../src/data/quizzes";
 import { useAuth } from "../../src/lib/auth-provider";
 import { db } from "../../services/firebase";
-import { doc, setDoc, increment } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function QuizPlayScreen({ route, navigation }) {
   const { quizId, quiz: quizFromRoute } = route.params ?? {};
@@ -131,23 +131,23 @@ export default function QuizPlayScreen({ route, navigation }) {
     try {
       const ref = doc(db, "users", user.uid);
 
+      // 이번 플레이 결과
       const correctCount = finalScore;
       const wrongCount = total - finalScore;
 
-      // 퀴즈 식별용 key (id가 있으면 그걸 쓰고, 없으면 title 이나 "unknown")
+      // 퀴즈 식별용 key (id가 있으면 id, 없으면 quizId, 그것도 없으면 "unknown")
       const quizKey = String(quiz?.id ?? quizId ?? "unknown");
 
       await setDoc(
         ref,
         {
-          // 1) 예전 전체 누적 값도 계속 쓰고 싶으면 그대로 유지
-          quizCorrectCount: increment(correctCount),
-          quizWrongCount: increment(wrongCount),
-
-          // 2) 퀴즈별 누적 값 (동적 필드 경로 사용)
-          [`quizStats.${quizKey}.title`]: quiz.title ?? "",
-          [`quizStats.${quizKey}.correctCount`]: increment(correctCount),
-          [`quizStats.${quizKey}.wrongCount`]: increment(wrongCount),
+          quizStats: {
+            [quizKey]: {
+              title: quiz.title ?? "",
+              correctCount, // increment X, 그냥 이번 값
+              wrongCount, // increment X, 그냥 이번 값
+            },
+          },
         },
         { merge: true }
       );
@@ -155,6 +155,7 @@ export default function QuizPlayScreen({ route, navigation }) {
       console.log("퀴즈 결과 저장 오류:", e);
     }
   };
+
   const handleNext = async () => {
     const isLast = currentIndex === total - 1;
 
